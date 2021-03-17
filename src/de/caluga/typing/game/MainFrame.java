@@ -110,8 +110,16 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
         add(gamePanel);
         for (int i = 0; i < 150; i++) {
             //add stars
+            int sz = (int) (Math.random() * 3);
+            int v = (int) (Math.random() * 10) + 1;
+            if (sz >= v) {
+                v = 1;
+            } else {
+                v = v - sz;
+            }
 
-            gamePanel.addObj(new Star((int) (Math.random() * 1920), (int) (Math.random() * 1080), (int) (Math.random() * 8) + 1));
+
+            gamePanel.addObj(new Star((int) (Math.random() * 1920), (int) (Math.random() * 1080), sz, v));
         }
 
         setResizable(false);

@@ -5,19 +5,29 @@ import java.awt.*;
 public class Star implements Obj {
     private int x = 0;
     private int y = 0;
+    private int sz = 1;
     private int vy = 0;
 
 
-    public Star(int x, int y, int v) {
+    public Star(int x, int y, int r, int v) {
         this.x = x;
         this.y = y;
         this.vy = v;
+        this.sz = r;
     }
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.WHITE);
-        g.fillOval(x - 1, y - 1, 2, 2);
+        if (sz > 1) {
+            g.setColor(Color.gray);
+            g.fillOval(x - sz, y - sz, sz * 2, sz * 2);
+
+            g.setColor(Color.WHITE);
+            g.fillOval(x - (sz / 2), y - (sz / 2), sz, sz);
+        } else {
+            g.setColor(Color.WHITE);
+            g.fillOval(x - sz, y - sz, 2 * sz, 2 * sz);
+        }
     }
 
     @Override
