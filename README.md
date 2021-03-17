@@ -84,3 +84,11 @@ public class Star implements Obj{
     }
 }
 ```
+
+# Disclaimer
+
+this is only tested on a few machines, use at own risk
+
+All sounds used in this project can be found at [soundbible.com](https://soundbible.com)
+
+The code is published under GPL
