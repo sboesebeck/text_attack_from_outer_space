@@ -27,6 +27,8 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
     private Ship activeShip = null;
     private Obj modalObject = null;
     private int wave = 1;
+    private int typos = 0;
+    private int typed = 0;
     private int shipsCreated = 0;
     private double maxVel = 1.2;
     private boolean gameOver = false;
@@ -214,7 +216,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
         if (shipsCreated >= getShipsInWave()) {
             //next wave
             if (shipCount == 0) {
-                wave++;
+
                 nextWave();
 //            } else {
 //                System.out.println("Waiting for ships to be destroyed!");
@@ -247,11 +249,43 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                         maxVel = maxVel - 2;
                         if (maxVel <= 0) maxVel = 1;
                     }
-                    gamePanel.addObj(new Ship((int) (Math.random() * 1920), 0, (int) (Math.random() * maxVel) + 1, getRandomWord(maxlen)));
+
+                    int x = (int) (Math.random() * 1920);
+                    while (true) {
+
+                        boolean ok = true;
+                        for (Obj o : gamePanel.getObjects()) {
+                            if (o instanceof Ship) {
+                                if (Math.abs(o.getX() - x) < 25) {
+                                    x = (int) (Math.random() * 1920);
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (ok) break;
+                    }
+                    gamePanel.addObj(new Ship(x, 0, (int) (Math.random() * maxVel) + 1, getRandomWord(maxlen)));
                     if (wave >= 3) {
                         for (int i = 0; i < (wave / 3); i++) {
-                            if (Math.random() < 0.3)
+                            if (Math.random() < 0.3) {
+                                x = (int) (Math.random() * 1920);
+                                while (true) {
+                                    boolean ok = true;
+                                    for (Obj o : gamePanel.getObjects()) {
+                                        if (o instanceof Ship) {
+                                            if (Math.abs(o.getX() - x) < 25) {
+                                                x = (int) (Math.random() * 1920);
+                                                ok = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (ok) break;
+
+                                }
                                 gamePanel.addObj(new Ship((int) (Math.random() * 1920), 0, (int) (Math.random() * maxVel / 2) + 1, getRandomWord(1 + (wave * 2))));
+                            }
                         }
                     }
                 }
@@ -308,13 +342,17 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
 //                System.out.println("you mistyped!");
                 gamePanel.setMultiplier(1);
                 play("fail.wav");
+                typos++;
             } else {
+                typed++;
                 gamePanel.addObj(new Shot(activeShip, 960, 1050, this));
 
             }
 
         } else {
             if (activeShip.isHit(str)) {
+                typed++;
+
                 gamePanel.addObj(new Shot(activeShip, 960, 1050, this));
 
                 if (activeShip.isFinished()) {
@@ -372,9 +410,9 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
 
     public void restart() {
         removeAllObj();
-        wave = 1;
+        wave = 0;
         maxVel = 1;
-        gamePanel.setMultiplier(0);
+        gamePanel.setMultiplier(1);
         gamePanel.setScore(0);
         modalObject = new BlockingTextObj("New Game - press ESC", 500, 500, 600, 500, 255, 100, 100, 15, 90, 100, 15);
         gamePanel.addObj(modalObject);
@@ -392,14 +430,47 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
 
     public void nextWave() {
 
+
         activeShip = null;
         shipsCreated = 0;
+        if (gamePanel.getScore() != 0 || wave > 0) {
+            int x = getWidth() / 2 - 200;
+            int y = getHeight() / 2 - 100;
+            //showing wave bonus score
+            addObj(new TextAnim("Wave Bonus", x, y, x, y, 155, 155, 190, 40, 45, 200, 10));
+            y = y + 150;
+            addObj(new TextAnim("Descruction Score: " + typed, x - 100, y, x + 135, y + 135, 255, 155, 120, 15, 42, 90, 10));
+            if (typos > 0) {
+                addObj(new TextAnim("Typos: -" + typos, x, y, x - 30, y + 30, 255, 20, 20, 20, 45, 80, 10));
+            }
+            if (getMultiplier() > 2)
+                addObj(new TextAnim("x" + getMultiplier(), x, y, x - 130, y + 130, 255, 122, 100, 15, 32, 90, 10));
 
+            int score = (typed - typos) + getShipsInWave();
+            if (score < 0) {
+                score = getShipsInWave();
+            } else {
+                score = score * gamePanel.getMultiplier();
+            }
+            addObj(new TextAnim("Total wave bonus: " + score, x, y, x + 50, y + 150, 255, 90, 90, 20, 45, 180, 20));
 
+        }
+        typos = 0;
+        typed = 0;
+        //starting new wave...
+        wave++;
         modalObject = new TextAnim("Wave: " + wave, 500, 500, 600, 500, 255, 100, 100, 15, 90, 100, 15);
         gamePanel.addObj(modalObject);
         gameOver = false;
-        gamePanel.addObj(new Base());
+        boolean found = false;
+        for (Obj o : gamePanel.getObjects()) {
+            if (o instanceof Base) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) gamePanel.addObj(new Base());
+
         play("startup.wav");
     }
 
