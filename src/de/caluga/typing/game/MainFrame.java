@@ -348,12 +348,17 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
             }
             if (activeShip == null) {
 //                System.out.println("you mistyped!");
+                HiddenObject target = new HiddenObject();
+                target.setX((int) (Math.random() * 1920));
+                target.setY((int) (Math.random() * 900));
+                gamePanel.addObj(target);
+                gamePanel.addObj(new Shot(target, 960, 1050, this, str, true));
                 gamePanel.setMultiplier(1);
-                play("fail.wav");
+//                play("fail.wav");
                 typos++;
             } else {
                 typed++;
-                gamePanel.addObj(new Shot(activeShip, 960, 1050, this));
+                gamePanel.addObj(new Shot(activeShip, 960, 1050, this, str));
 
             }
 
@@ -361,7 +366,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
             if (activeShip.isHit(str)) {
                 typed++;
 
-                gamePanel.addObj(new Shot(activeShip, 960, 1050, this));
+                gamePanel.addObj(new Shot(activeShip, 960, 1050, this, str));
 
                 if (activeShip.isFinished()) {
 //                    System.out.println("Ship finished... ");
@@ -370,7 +375,12 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                 }
             } else {
 //                System.out.println("Missed active ship!");
-                play("fail.wav");
+//                play("fail.wav");
+                HiddenObject target = new HiddenObject();
+                target.setX((int) (Math.random() * 1920));
+                target.setY((int) (Math.random() * 900));
+                gamePanel.addObj(target);
+                gamePanel.addObj(new Shot(target, 960, 1050, this, str, true));
                 gamePanel.setMultiplier(1);
             }
         }

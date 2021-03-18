@@ -15,8 +15,14 @@ public class Shot implements Obj {
     private boolean exploded = false;
     private boolean exploding = false;
     private int frame = 0;
+    private String txt = "";
+    private boolean fail = false;
 
-    public Shot(Obj target, int startX, int startY, MainFrame main) {
+    public Shot(Obj target, int startX, int startY, MainFrame main, String text) {
+        this(target, startX, startY, main, text, false);
+    }
+
+    public Shot(Obj target, int startX, int startY, MainFrame main, String text, boolean fail) {
         this.target = target;
         x = startX;
         y = startY;
@@ -27,6 +33,8 @@ public class Shot implements Obj {
             ((Ship) target).incCursor();
         }
         main.play("shot.wav");
+        this.txt = text;
+        this.fail = fail;
     }
 
     @Override
@@ -36,22 +44,52 @@ public class Shot implements Obj {
             if (frame > 25) {
                 exploded = true;
             } else {
-                g.setColor(new Color(128, 40, 40));
-                g.drawOval(x - ((int) ((double) frame * 1.5)), y - ((int) ((double) frame * 1.5)), frame * 3, frame * 3);
-                g.setColor(Color.yellow);
-                g.drawOval(x - frame, y - frame, frame * 2, frame * 2);
+                if (fail) {
+                    g.setColor(new Color(128, 40, 40));
+                    g.drawOval(x - ((int) ((double) frame / 2)), y - ((int) ((double) frame / 2)), frame, frame);
+                } else {
+                    g.setColor(new Color(128, 40, 40));
+                    g.drawOval(x - ((int) ((double) frame * 1.5)), y - ((int) ((double) frame * 1.5)), frame * 3, frame * 3);
+                    g.setColor(Color.yellow);
+                    g.drawOval(x - frame, y - frame, frame * 2, frame * 2);
+                }
             }
         } else {
-            g.setStroke(new BasicStroke(3));
-            g.setColor(Color.red);
-            g.drawLine(x, y, x2, y2);
-            g.fillOval(x2 - 3, y2 - 3, 6, 6);
+            if (txt.equals(" ") && !fail) {
+                g.setColor(Color.green);
+                g.setStroke(new BasicStroke(3));
+                g.drawLine(x, y, x2, y2);
+                g.setColor(Color.YELLOW);
+                g.fillOval(x2 - 4, y2 - 4, 8, 8);
+                g.setColor(Color.RED);
+                g.fillOval(x2 - 2, y2 - 2, 4, 4);
+            } else {
+                if (fail) {
+                    g.setColor(Color.gray);
+                } else {
+                    g.setColor(Color.RED);
+                }
+                g.setStroke(new BasicStroke(3));
+                g.drawLine(x, y, x2, y2);
+                g.fillOval(x2 - 5, y2 - 5, 10, 10);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Menlo", Font.PLAIN, 15));
+                if (x2 > x) {
+                    g.drawString(txt, x2 + 15, y2);
+                } else {
+                    g.drawString(txt, x2 - 20, y2);
+
+                }
+            }
         }
 
     }
 
     @Override
     public boolean animate() {
+        if (fail) {
+
+        }
         if (!exploding) {
             double alpha = Math.atan(Math.abs((double) (target.getY() - y)) / Math.abs((double) (target.getX() - x)));
 
@@ -74,8 +112,9 @@ public class Shot implements Obj {
             }
             if (Math.abs(target.getX() - x) < 5 && Math.abs(target.getY() - y) < 5) {
                 exploding = true;
-                main.play("explosion.wav");
+
                 if (target instanceof Ship) {
+                    main.play("explosion.wav");
                     Ship targetShip = (Ship) this.target;
                     targetShip.hit();
 
@@ -96,6 +135,9 @@ public class Shot implements Obj {
                         main.incScore(score);
                         main.addObj(new TextAnim("" + score, x, y, x - 30, y - 30, 255, 255, 0, 20, 35, 80, 10));
                     }
+                } else if (target instanceof HiddenObject) {
+                    main.play("plop.wav");
+                    ((HiddenObject) target).setDelete(true);
                 }
                 return exploded;
             }
