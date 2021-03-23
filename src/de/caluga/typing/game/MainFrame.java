@@ -233,25 +233,25 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
         } else {
 
             if (modalObject == null) {
-                int mod = (200 - wave * 2);
-                if (mod <= 35) {
-                    mod = 50;
+                int mod = (200 - wave * 4);
+                if (mod <= 40) {
+                    mod = 40;
                 }
                 if (cycleCount % mod == 0) {
                     //create ships
                     shipsCreated++;
 
                     if (wave == 3) {
-                        maxVel = 1.2;
+                        maxVel = 2.2;
                     }
                     if (wave == 5) {
-                        maxVel = 1.8;
+                        maxVel = 2.8;
                     }
                     if (wave == 7) {
-                        maxVel = 2.0;
+                        maxVel = 3.0;
                     }
 
-                    int maxlen = 2 + (wave * 2);
+                    int maxlen = 2 + (wave * 3);
                     if (gamePanel.isHard()) {
                         maxlen = maxlen * 2;
                         maxVel = maxVel - 2;
@@ -273,7 +273,16 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                         }
                         if (ok) break;
                     }
-                    gamePanel.addObj(new Ship(x, 0, (int) (Math.random() * maxVel) + 1, getRandomWord(maxlen)));
+                    double minVel = wave * 0.5;
+                    if (gamePanel.isHard()) {
+                        minVel += 0.5;
+                    }
+                    if (minVel < 1) minVel = 1;
+                    double v = (Math.random() * maxVel) + minVel;
+                    String txt = getRandomWord(maxlen);
+                    v = v - txt.length() / 10.0;
+                    System.out.println("minVel: " + minVel + " maxVel: " + maxVel + " v: " + v + " txt:" + txt);
+                    gamePanel.addObj(new Ship(x, 0, v, txt));
                     if (wave >= 3) {
                         for (int i = 0; i < (wave / 3); i++) {
                             if (Math.random() < 0.3) {
@@ -292,7 +301,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                                     if (ok) break;
 
                                 }
-                                gamePanel.addObj(new Ship((int) (Math.random() * 1920), 0, (int) (Math.random() * maxVel / 2) + 1, getRandomWord(1 + (wave * 2))));
+                                gamePanel.addObj(new Ship((int) (Math.random() * 1920), 0, Math.random() * maxVel / 2.0 + minVel, getRandomWord(1 + (wave * 2))));
                             }
                         }
                     }

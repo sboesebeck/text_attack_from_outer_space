@@ -60,6 +60,14 @@ da
 dabei
 dafür
 damit
+Dampf
+Dampfschiff
+Dampfschfffahrt
+Kapitän
+Pandemie
+Pandemiebekämpfung
+Gebrauchtes
+dennoch
 danach
 dann
 daran
@@ -372,6 +380,7 @@ Schüler
 schwarz
 schwer
 Schwester
+Schwesterlein
 schwimmen
 sechs
 See
@@ -421,7 +430,10 @@ Tante
 Teller
 tief
 Tier
+Tierhaltung
+Käfig
 Tisch
+Tischdecke
 tot
 tragen
 traurig
