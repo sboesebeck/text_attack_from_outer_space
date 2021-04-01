@@ -18,6 +18,9 @@ antworten
 beantworten
 Apfel
 Arbeit
+Amtsträger
+Befürworter
+befürworten
 arbeiten
 Arzt
 auch
@@ -525,3 +528,8 @@ zurück
 zusammen
 zwei
 zwischen
+Zwetschge
+zwitschern
+Zweige
+Abzweigen
+Abzweigung

@@ -251,7 +251,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                         maxVel = 3.0;
                     }
 
-                    int maxlen = 2 + (wave * 3);
+                    int maxlen = 3 + (wave * 3);
                     if (gamePanel.isHard()) {
                         maxlen = maxlen * 2;
                         maxVel = maxVel - 2;
