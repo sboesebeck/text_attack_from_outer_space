@@ -52,7 +52,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
 
     public static void play(String filename) {
 
-        if (soundCount.containsKey(filename) && soundCount.get(filename).get() > 3) {
+        if (soundCount.containsKey(filename) && soundCount.get(filename).get() > 2) {
             return;
         }
 
@@ -281,6 +281,7 @@ public class MainFrame extends JFrame implements ActionListener, KeyListener {
                     double v = (Math.random() * maxVel) + minVel;
                     String txt = getRandomWord(maxlen);
                     v = v - txt.length() / 10.0;
+                    if (v < minVel) v = minVel;
                     System.out.println("minVel: " + minVel + " maxVel: " + maxVel + " v: " + v + " txt:" + txt);
                     gamePanel.addObj(new Ship(x, 0, v, txt));
                     if (wave >= 3) {

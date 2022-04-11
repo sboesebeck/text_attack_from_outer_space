@@ -32,7 +32,7 @@ public class Shot implements Obj {
         if (target instanceof Ship) {
             ((Ship) target).incCursor();
         }
-        main.play("shot.wav");
+        //main.play("shot.wav");
         this.txt = text;
         this.fail = fail;
     }
